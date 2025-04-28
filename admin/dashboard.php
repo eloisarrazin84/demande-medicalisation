@@ -23,12 +23,14 @@ $demandes = $pdo->query("SELECT * FROM demandes ORDER BY date_creation DESC")->f
 
     <div class="card p-4 shadow">
         <h5>Demandes reçues</h5>
-        <table class="table table-striped">
+        <table class="table table-striped align-middle">
             <thead>
                 <tr>
                     <th>Événement</th>
                     <th>Date</th>
                     <th>Lieu</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +39,27 @@ $demandes = $pdo->query("SELECT * FROM demandes ORDER BY date_creation DESC")->f
                         <td><?= htmlspecialchars($demande['evenement']) ?></td>
                         <td><?= htmlspecialchars($demande['date_evenement']) ?></td>
                         <td><?= htmlspecialchars($demande['lieu']) ?></td>
+                        <td>
+                            <?php
+                            $status = $demande['statut'];
+                            $badge = match($status) {
+                                'validee' => 'success',
+                                'refusee' => 'danger',
+                                default => 'warning',
+                            };
+                            ?>
+                            <span class="badge bg-<?= $badge ?>">
+                                <?= ucfirst(str_replace('_', ' ', $status)) ?>
+                            </span>
+                        </td>
+                        <td>
+                            <?php if ($status === 'en_attente'): ?>
+                                <a href="update_status.php?id=<?= $demande['id'] ?>&action=validee" class="btn btn-success btn-sm">Valider</a>
+                                <a href="update_status.php?id=<?= $demande['id'] ?>&action=refusee" class="btn btn-danger btn-sm">Refuser</a>
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
