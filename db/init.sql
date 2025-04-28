@@ -26,3 +26,4 @@ CREATE TABLE IF NOT EXISTS demandes (
   date_limite DATE,
   date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+ALTER TABLE demandes ADD statut ENUM('en_attente', 'validee', 'refusee') DEFAULT 'en_attente';
