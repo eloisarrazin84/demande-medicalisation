@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public:/var/www/html
+      - ./admin:/var/www/html/admin
+      - ./config:/var/www/html/config
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: medicalisation
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: medicaluser
+      MYSQL_PASSWORD: medicalpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  dbdata:
